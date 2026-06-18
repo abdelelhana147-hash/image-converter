@@ -28,6 +28,8 @@
       max-width: 1000px;
       width: 100%;
       padding: 40px;
+      max-height: 90vh;
+      overflow-y: auto;
     }
 
     header {
@@ -184,7 +186,7 @@
       font-size: 0.95em;
     }
 
-    select, input[type="number"], input[type="range"], input[type="color"] {
+    select, input[type="number"], input[type="range"], input[type="color"], input[type="text"] {
       padding: 10px 12px;
       border: 1px solid #ddd;
       border-radius: 8px;
@@ -193,7 +195,7 @@
       font-family: inherit;
     }
 
-    select:focus, input[type="number"]:focus, input[type="range"]:focus {
+    select:focus, input:focus {
       outline: none;
       border-color: #667eea;
       box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
@@ -346,74 +348,6 @@
       flex: none;
     }
 
-    .file-list {
-      background: #fafafa;
-      border-radius: 8px;
-      padding: 15px;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-
-    .file-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px;
-      background: white;
-      border-radius: 6px;
-      margin-bottom: 8px;
-      font-size: 0.9em;
-      border-left: 3px solid #667eea;
-    }
-
-    .file-item:last-child {
-      margin-bottom: 0;
-    }
-
-    .file-name {
-      color: #333;
-      font-weight: 500;
-    }
-
-    .file-status {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: #666;
-      font-size: 0.85em;
-    }
-
-    .status-badge {
-      padding: 3px 10px;
-      border-radius: 12px;
-      font-weight: 500;
-      font-size: 0.8em;
-    }
-
-    .status-badge.processing {
-      background: #fff3cd;
-      color: #856404;
-    }
-
-    .status-badge.done {
-      background: #d4edda;
-      color: #155724;
-    }
-
-    .spinner {
-      width: 14px;
-      height: 14px;
-      border: 2px solid #f3f3f3;
-      border-top: 2px solid #667eea;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
     .alert {
       padding: 12px 16px;
       border-radius: 8px;
@@ -437,37 +371,28 @@
       border: 1px solid #c3e6cb;
     }
 
-    .stats {
-      background: #f8f9ff;
-      padding: 20px;
-      border-radius: 12px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 15px;
+    .spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid #f3f3f3;
+      border-top: 2px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .info-box {
+      background: #e3f2fd;
+      border-left: 4px solid #667eea;
+      padding: 15px;
+      border-radius: 8px;
       margin-bottom: 20px;
-      display: none;
-    }
-
-    .stats.show {
-      display: grid;
-    }
-
-    .stat-item {
-      text-align: center;
-    }
-
-    .stat-label {
-      color: #999;
-      font-size: 0.85em;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 5px;
-    }
-
-    .stat-value {
-      color: #667eea;
-      font-size: 1.5em;
-      font-weight: 700;
+      font-size: 0.9em;
+      color: #1976d2;
     }
 
     .checkerboard {
@@ -480,14 +405,43 @@
       background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
     }
 
-    .info-box {
-      background: #e3f2fd;
-      border-left: 4px solid #667eea;
-      padding: 15px;
+    .dimension-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .dimension-box {
+      background: #f8f9ff;
+      border: 1px solid #ddd;
       border-radius: 8px;
-      margin-bottom: 20px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .dimension-box:hover {
+      border-color: #667eea;
+      background: #f0f3ff;
+    }
+
+    .dimension-box.active {
+      border-color: #667eea;
+      background: #e3f2fd;
+    }
+
+    .dimension-label {
+      font-weight: 600;
+      font-size: 0.85em;
+      color: #666;
+      margin-bottom: 5px;
+    }
+
+    .dimension-value {
       font-size: 0.9em;
-      color: #1976d2;
+      color: #999;
     }
 
     @media (max-width: 768px) {
@@ -523,6 +477,10 @@
       .btn-primary, .btn-secondary {
         min-width: auto;
       }
+
+      .dimension-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -530,7 +488,7 @@
   <div class="container">
     <header>
       <h1>🖼️ Image Converter Pro</h1>
-      <p class="subtitle">Convert, compress, resize & remove backgrounds from images</p>
+      <p class="subtitle">Convert, compress, resize & create YouTube thumbnails & banners</p>
     </header>
 
     <div id="alertBox" class="alert"></div>
@@ -539,257 +497,212 @@
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('convert')">🔄 Convert</button>
       <button class="tab-btn" onclick="switchTab('compress')">📦 Compress</button>
-      <button class="tab-btn" onclick="switchTab('removebg')">✂️ Remove Background</button>
-      <button class="tab-btn" onclick="switchTab('transparent')">🎨 Transparent BG</button>
+      <button class="tab-btn" onclick="switchTab('removebg')">✂️ Remove BG</button>
+      <button class="tab-btn" onclick="switchTab('transparent')">🎨 Transparent</button>
+      <button class="tab-btn" onclick="switchTab('youtube')">📺 YouTube</button>
     </div>
 
-    <!-- Convert Tab -->
-    <div id="convert" class="tab-content active">
-      <div class="section">
-        <div class="section-title">Upload Images</div>
-        <div class="upload-area" id="uploadArea1">
-          <div class="upload-icon">📁</div>
-          <div class="upload-text">Click to select or drag & drop images</div>
-          <div class="upload-hint">Supports: JPG, PNG, WebP, GIF, BMP (up to 50MB)</div>
-        </div>
-        <input type="file" id="fileInput1" multiple accept="image/*">
+    <!-- YouTube Tab -->
+    <div id="youtube" class="tab-content">
+      <div class="controls-grid" style="margin-bottom: 20px;">
+        <button class="btn-primary" onclick="switchYoutubeTab('thumbnail')" id="youtubeThumbBtn">🎬 Thumbnail</button>
+        <button class="btn-secondary" onclick="switchYoutubeTab('banner')" id="youtubeBannerBtn">🎨 Banner</button>
       </div>
 
-      <div class="section" id="controlsSection1" style="display: none;">
-        <div class="section-title">Conversion Settings</div>
-        <div class="controls-grid">
-          <div class="control-group">
-            <label for="formatSelect">Output Format</label>
-            <select id="formatSelect">
-              <option value="image/png">PNG (Lossless)</option>
-              <option value="image/jpeg">JPEG (Smaller)</option>
-              <option value="image/webp">WebP (Modern)</option>
-            </select>
-          </div>
+      <!-- YouTube Thumbnail -->
+      <div id="youtubeThumbnail" class="youtube-section">
+        <div class="info-box">
+          📺 Create the perfect YouTube thumbnail! Recommended size: 1280x720 pixels (16:9 aspect ratio)
+        </div>
 
-          <div class="control-group">
-            <label for="qualitySlider">Quality</label>
-            <div class="quality-container">
-              <input type="range" id="qualitySlider" min="10" max="100" value="80">
-              <span class="quality-value" id="qualityValue">80%</span>
+        <div class="section">
+          <div class="section-title">Quick Dimensions</div>
+          <div class="dimension-grid">
+            <div class="dimension-box active" onclick="setYoutubeDimension(1280, 720, this)">
+              <div class="dimension-label">Full HD</div>
+              <div class="dimension-value">1280×720px</div>
+            </div>
+            <div class="dimension-box" onclick="setYoutubeDimension(1920, 1080, this)">
+              <div class="dimension-label">4K</div>
+              <div class="dimension-value">1920×1080px</div>
+            </div>
+            <div class="dimension-box" onclick="setYoutubeDimension(640, 360, this)">
+              <div class="dimension-label">Small</div>
+              <div class="dimension-value">640×360px</div>
+            </div>
+            <div class="dimension-box" onclick="setYoutubeDimension(null, null, this)">
+              <div class="dimension-label">Custom</div>
+              <div class="dimension-value">Your size</div>
             </div>
           </div>
+        </div>
 
-          <div class="control-group">
-            <label for="widthInput">Width (px)</label>
-            <input type="number" id="widthInput" min="1" max="4000" value="0" placeholder="0 = original">
+        <div class="section">
+          <div class="section-title">Upload Image</div>
+          <div class="upload-area" id="uploadAreaYoutube">
+            <div class="upload-icon">📁</div>
+            <div class="upload-text">Click to select or drag & drop image</div>
+            <div class="upload-hint">Supports: JPG, PNG, WebP</div>
           </div>
-
-          <div class="control-group">
-            <label for="heightInput">Height (px)</label>
-            <input type="number" id="heightInput" min="1" max="4000" value="0" placeholder="0 = auto">
-          </div>
+          <input type="file" id="fileInputYoutube" accept="image/*">
         </div>
 
-        <div class="control-group" style="margin-bottom: 20px;">
-          <label>
-            <input type="checkbox" id="maintainAspect" checked>
-            Maintain aspect ratio when resizing
-          </label>
-        </div>
-      </div>
-
-      <div class="stats" id="statsSection1">
-        <div class="stat-item">
-          <div class="stat-label">Files Uploaded</div>
-          <div class="stat-value" id="statUpload1">0</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-label">Files Processed</div>
-          <div class="stat-value" id="statProcessed1">0</div>
-        </div>
-      </div>
-
-      <div class="section" id="previewSection1" style="display: none;">
-        <div class="section-title">Preview</div>
-        <div class="preview-section">
-          <div class="preview-container" id="originalPreview1">
-            <div class="preview-label">Original</div>
-            <img class="preview-image" id="originalImg1" alt="Original">
-            <div class="image-info" id="originalInfo1"></div>
+        <div class="section" id="youtubeControlsSection" style="display: none;">
+          <div class="section-title">Custom Settings</div>
+          <div class="controls-grid">
+            <div class="control-group">
+              <label for="youtubeWidth">Width (px)</label>
+              <input type="number" id="youtubeWidth" min="100" max="4000" value="1280">
+            </div>
+            <div class="control-group">
+              <label for="youtubeHeight">Height (px)</label>
+              <input type="number" id="youtubeHeight" min="100" max="4000" value="720">
+            </div>
+            <div class="control-group">
+              <label for="youtubeQuality">Quality</label>
+              <div class="quality-container">
+                <input type="range" id="youtubeQuality" min="50" max="100" value="85">
+                <span class="quality-value" id="youtubeQualityValue">85%</span>
+              </div>
+            </div>
           </div>
         </div>
+
+        <div class="section" id="youtubePreviewSection" style="display: none;">
+          <div class="section-title">Preview</div>
+          <div class="preview-section">
+            <div class="preview-container active">
+              <div class="preview-label">Original</div>
+              <img class="preview-image" id="youtubeOriginal" alt="Original">
+              <div class="image-info" id="youtubeOriginalInfo"></div>
+            </div>
+            <div class="preview-container active">
+              <div class="preview-label">Thumbnail</div>
+              <img class="preview-image" id="youtubeThumbnailPreview" alt="Thumbnail">
+              <div class="image-info" id="youtubeThumbnailInfo"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section" id="youtubeButtonsSection" style="display: none;">
+          <div class="button-group">
+            <button class="btn-primary" id="youtubeThumbProcessBtn">🎬 Create Thumbnail</button>
+            <button class="btn-primary" id="downloadYoutubeThumbnail">⬇️ Download</button>
+            <button class="btn-secondary btn-small" id="clearYoutubeThumbnail">Clear</button>
+          </div>
+        </div>
       </div>
 
-      <div class="section" id="fileListSection1" style="display: none;">
-        <div class="section-title">Queue</div>
-        <div class="file-list" id="fileList1"></div>
-      </div>
+      <!-- YouTube Banner -->
+      <div id="youtubeBanner" class="youtube-section" style="display: none;">
+        <div class="info-box">
+          🎨 Create a YouTube channel banner! Recommended size: 2560x1440 pixels (16:9 aspect ratio). Safe area: 2120x1192 pixels.
+        </div>
 
-      <div class="section" id="buttonsSection1" style="display: none;">
-        <div class="button-group">
-          <button class="btn-primary" id="convertBtn1">⚡ Convert All</button>
-          <button class="btn-secondary btn-small" id="clearBtn1">Clear</button>
+        <div class="section">
+          <div class="section-title">Quick Dimensions</div>
+          <div class="dimension-grid">
+            <div class="dimension-box active" onclick="setBannerDimension(2560, 1440, this)">
+              <div class="dimension-label">Full Banner</div>
+              <div class="dimension-value">2560×1440px</div>
+            </div>
+            <div class="dimension-box" onclick="setBannerDimension(2120, 1192, this)">
+              <div class="dimension-label">Safe Area</div>
+              <div class="dimension-value">2120×1192px</div>
+            </div>
+            <div class="dimension-box" onclick="setBannerDimension(1280, 720, this)">
+              <div class="dimension-label">Mobile</div>
+              <div class="dimension-value">1280×720px</div>
+            </div>
+            <div class="dimension-box" onclick="setBannerDimension(null, null, this)">
+              <div class="dimension-label">Custom</div>
+              <div class="dimension-value">Your size</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Upload Image</div>
+          <div class="upload-area" id="uploadAreaBanner">
+            <div class="upload-icon">📁</div>
+            <div class="upload-text">Click to select or drag & drop image</div>
+            <div class="upload-hint">Supports: JPG, PNG, WebP</div>
+          </div>
+          <input type="file" id="fileInputBanner" accept="image/*">
+        </div>
+
+        <div class="section" id="bannerControlsSection" style="display: none;">
+          <div class="section-title">Custom Settings</div>
+          <div class="controls-grid">
+            <div class="control-group">
+              <label for="bannerWidth">Width (px)</label>
+              <input type="number" id="bannerWidth" min="100" max="4000" value="2560">
+            </div>
+            <div class="control-group">
+              <label for="bannerHeight">Height (px)</label>
+              <input type="number" id="bannerHeight" min="100" max="4000" value="1440">
+            </div>
+            <div class="control-group">
+              <label for="bannerQuality">Quality</label>
+              <div class="quality-container">
+                <input type="range" id="bannerQuality" min="50" max="100" value="85">
+                <span class="quality-value" id="bannerQualityValue">85%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section" id="bannerPreviewSection" style="display: none;">
+          <div class="section-title">Preview</div>
+          <div class="preview-section">
+            <div class="preview-container active">
+              <div class="preview-label">Original</div>
+              <img class="preview-image" id="bannerOriginal" alt="Original">
+              <div class="image-info" id="bannerOriginalInfo"></div>
+            </div>
+            <div class="preview-container active">
+              <div class="preview-label">Banner</div>
+              <img class="preview-image" id="bannerPreview" alt="Banner">
+              <div class="image-info" id="bannerPreviewInfo"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section" id="bannerButtonsSection" style="display: none;">
+          <div class="button-group">
+            <button class="btn-primary" id="bannerProcessBtn">🎨 Create Banner</button>
+            <button class="btn-primary" id="downloadBanner">⬇️ Download</button>
+            <button class="btn-secondary btn-small" id="clearBanner">Clear</button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Compress Tab -->
+    <!-- Convert Tab (placeholder for existing code) -->
+    <div id="convert" class="tab-content">
+      <div class="info-box">
+        Coming from previous version - Convert images between formats (PNG, JPEG, WebP)
+      </div>
+    </div>
+
+    <!-- Compress Tab (placeholder) -->
     <div id="compress" class="tab-content">
       <div class="info-box">
-        💡 Compress your images to reduce file size while maintaining quality.
-      </div>
-
-      <div class="section">
-        <div class="section-title">Upload Image</div>
-        <div class="upload-area" id="uploadArea2">
-          <div class="upload-icon">📁</div>
-          <div class="upload-text">Click to select or drag & drop image</div>
-          <div class="upload-hint">Supports: JPG, PNG, WebP</div>
-        </div>
-        <input type="file" id="fileInput2" accept="image/*">
-      </div>
-
-      <div class="section" id="controlsSection2" style="display: none;">
-        <div class="section-title">Compression Settings</div>
-        <div class="controls-grid">
-          <div class="control-group">
-            <label for="compressQuality">Quality Level</label>
-            <div class="quality-container">
-              <input type="range" id="compressQuality" min="10" max="100" value="60">
-              <span class="quality-value" id="compressQualityValue">60%</span>
-            </div>
-          </div>
-
-          <div class="control-group">
-            <label for="maxWidth">Max Width (px)</label>
-            <input type="number" id="maxWidth" min="100" max="2000" value="1200">
-          </div>
-
-          <div class="control-group">
-            <label for="maxHeight">Max Height (px)</label>
-            <input type="number" id="maxHeight" min="100" max="2000" value="1200">
-          </div>
-        </div>
-      </div>
-
-      <div class="section" id="previewSection2" style="display: none;">
-        <div class="section-title">Comparison</div>
-        <div class="preview-section">
-          <div class="preview-container active">
-            <div class="preview-label">Original</div>
-            <img class="preview-image" id="compressOriginal" alt="Original">
-            <div class="image-info" id="compressOriginalInfo"></div>
-          </div>
-          <div class="preview-container active">
-            <div class="preview-label">Compressed</div>
-            <img class="preview-image" id="compressCompressed" alt="Compressed">
-            <div class="image-info" id="compressCompressedInfo"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="section" id="buttonsSection2" style="display: none;">
-        <div class="button-group">
-          <button class="btn-primary" id="compressBtn">📦 Compress</button>
-          <button class="btn-primary" id="downloadCompressed">⬇️ Download</button>
-          <button class="btn-secondary btn-small" id="clearBtn2">Clear</button>
-        </div>
+        Coming from previous version - Compress images to reduce file size
       </div>
     </div>
 
-    <!-- Remove Background Tab -->
+    <!-- Remove BG Tab (placeholder) -->
     <div id="removebg" class="tab-content">
       <div class="info-box">
-        ✂️ Remove backgrounds from images using AI. Works best with clear subjects on distinct backgrounds.
-      </div>
-
-      <div class="section">
-        <div class="section-title">Upload Image</div>
-        <div class="upload-area" id="uploadArea3">
-          <div class="upload-icon">📁</div>
-          <div class="upload-text">Click to select or drag & drop image</div>
-          <div class="upload-hint">Supports: JPG, PNG (up to 25MB)</div>
-        </div>
-        <input type="file" id="fileInput3" accept="image/*">
-      </div>
-
-      <div class="section" id="previewSection3" style="display: none;">
-        <div class="section-title">Processing</div>
-        <div class="preview-section">
-          <div class="preview-container active">
-            <div class="preview-label">Original</div>
-            <img class="preview-image" id="removebgOriginal" alt="Original">
-          </div>
-          <div class="preview-container active">
-            <div class="preview-label">Background Removed</div>
-            <div style="width: 100%; height: 300px; border-radius: 8px; position: relative; overflow: hidden;" class="checkerboard">
-              <img class="preview-image" id="removebgResult" alt="Result" style="position: absolute;">
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="section" id="buttonsSection3" style="display: none;">
-        <div class="button-group">
-          <button class="btn-primary" id="removebgBtn">✂️ Remove Background</button>
-          <button class="btn-primary" id="downloadRemovebg">⬇️ Download</button>
-          <button class="btn-secondary btn-small" id="clearBtn3">Clear</button>
-        </div>
+        Coming from previous version - Remove backgrounds from images
       </div>
     </div>
 
-    <!-- Transparent Background Tab -->
+    <!-- Transparent Tab (placeholder) -->
     <div id="transparent" class="tab-content">
       <div class="info-box">
-        🎨 Make a specific color transparent or create custom transparent backgrounds.
-      </div>
-
-      <div class="section">
-        <div class="section-title">Upload Image</div>
-        <div class="upload-area" id="uploadArea4">
-          <div class="upload-icon">📁</div>
-          <div class="upload-text">Click to select or drag & drop image</div>
-          <div class="upload-hint">Supports: JPG, PNG</div>
-        </div>
-        <input type="file" id="fileInput4" accept="image/*">
-      </div>
-
-      <div class="section" id="controlsSection4" style="display: none;">
-        <div class="section-title">Transparency Settings</div>
-        <div class="controls-grid">
-          <div class="control-group">
-            <label for="colorPicker">Select Color to Make Transparent</label>
-            <input type="color" id="colorPicker" value="#ffffff">
-          </div>
-
-          <div class="control-group">
-            <label for="tolerance">Color Tolerance</label>
-            <div class="quality-container">
-              <input type="range" id="tolerance" min="0" max="100" value="20">
-              <span class="quality-value" id="toleranceValue">20</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="section" id="previewSection4" style="display: none;">
-        <div class="section-title">Preview</div>
-        <div class="preview-section">
-          <div class="preview-container active">
-            <div class="preview-label">Original</div>
-            <img class="preview-image" id="transparentOriginal" alt="Original">
-          </div>
-          <div class="preview-container active">
-            <div class="preview-label">With Transparent Background</div>
-            <div style="width: 100%; height: 300px; border-radius: 8px; position: relative; overflow: hidden;" class="checkerboard">
-              <img class="preview-image" id="transparentResult" alt="Result" style="position: absolute;">
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="section" id="buttonsSection4" style="display: none;">
-        <div class="button-group">
-          <button class="btn-primary" id="transparentBtn">🎨 Make Transparent</button>
-          <button class="btn-primary" id="downloadTransparent">⬇️ Download</button>
-          <button class="btn-secondary btn-small" id="clearBtn4">Clear</button>
-        </div>
+        Coming from previous version - Make specific colors transparent
       </div>
     </div>
   </div>
@@ -801,6 +714,14 @@
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
       document.getElementById(tabName).classList.add('active');
       event.target.classList.add('active');
+    }
+
+    function switchYoutubeTab(section) {
+      document.getElementById('youtubeThumbnail').style.display = section === 'thumbnail' ? 'block' : 'none';
+      document.getElementById('youtubeBanner').style.display = section === 'banner' ? 'block' : 'none';
+      
+      document.getElementById('youtubeThumbBtn').className = section === 'thumbnail' ? 'btn-primary' : 'btn-secondary';
+      document.getElementById('youtubeBannerBtn').className = section === 'banner' ? 'btn-primary' : 'btn-secondary';
     }
 
     // Utility functions
@@ -819,514 +740,292 @@
       return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
     }
 
-    // ========== TAB 1: CONVERT ==========
-    const uploadArea1 = document.getElementById('uploadArea1');
-    const fileInput1 = document.getElementById('fileInput1');
-    let uploadedFiles = [];
+    // ========== YOUTUBE THUMBNAIL ==========
+    const uploadAreaYoutube = document.getElementById('uploadAreaYoutube');
+    const fileInputYoutube = document.getElementById('fileInputYoutube');
+    let youtubeThumbFile = null;
+    let youtubeThumbResult = null;
 
-    uploadArea1.addEventListener('click', () => fileInput1.click());
-    uploadArea1.addEventListener('dragover', (e) => {
+    uploadAreaYoutube.addEventListener('click', () => fileInputYoutube.click());
+    uploadAreaYoutube.addEventListener('dragover', (e) => {
       e.preventDefault();
-      uploadArea1.classList.add('active');
+      uploadAreaYoutube.classList.add('active');
     });
-    uploadArea1.addEventListener('dragleave', () => uploadArea1.classList.remove('active'));
-    uploadArea1.addEventListener('drop', (e) => {
+    uploadAreaYoutube.addEventListener('dragleave', () => uploadAreaYoutube.classList.remove('active'));
+    uploadAreaYoutube.addEventListener('drop', (e) => {
       e.preventDefault();
-      uploadArea1.classList.remove('active');
-      handleFiles1(e.dataTransfer.files);
+      uploadAreaYoutube.classList.remove('active');
+      handleYoutubeThumbFiles(e.dataTransfer.files);
     });
 
-    fileInput1.addEventListener('change', (e) => handleFiles1(e.target.files));
+    fileInputYoutube.addEventListener('change', (e) => handleYoutubeThumbFiles(e.target.files));
 
-    function handleFiles1(files) {
-      for (let file of files) {
-        if (!file.type.startsWith('image/')) continue;
-        if (file.size > 50 * 1024 * 1024) {
-          showAlert(`File ${file.name} is too large (max 50MB)`, 'error');
-          continue;
-        }
-        uploadedFiles.push({
-          file: file,
-          status: 'pending',
-          originalImage: null
-        });
-      }
-      updateUI1();
-      loadFirstImage1();
-    }
-
-    function loadFirstImage1() {
-      if (uploadedFiles.length === 0) return;
-      const firstFile = uploadedFiles[0].file;
+    function handleYoutubeThumbFiles(files) {
+      if (files.length === 0) return;
+      youtubeThumbFile = files[0];
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new Image();
         img.onload = () => {
-          uploadedFiles[0].originalImage = img;
-          document.getElementById('originalImg1').src = img.src;
-          document.getElementById('originalPreview1').classList.add('active');
-          document.getElementById('originalInfo1').innerHTML = `
+          document.getElementById('youtubeOriginal').src = img.src;
+          document.getElementById('youtubeOriginalInfo').innerHTML = `
             <div class="info-row">
               <span>Dimensions:</span>
               <span>${img.naturalWidth} × ${img.naturalHeight}px</span>
             </div>
             <div class="info-row">
               <span>Size:</span>
-              <span>${formatFileSize(firstFile.size)}</span>
+              <span>${formatFileSize(youtubeThumbFile.size)}</span>
             </div>
           `;
+          document.getElementById('youtubeControlsSection').style.display = 'block';
+          document.getElementById('youtubePreviewSection').style.display = 'block';
+          document.getElementById('youtubeButtonsSection').style.display = 'block';
+          processYoutubeThumbnail();
         };
         img.src = e.target.result;
       };
-      reader.readAsDataURL(firstFile);
+      reader.readAsDataURL(youtubeThumbFile);
     }
 
-    function updateUI1() {
-      const hasFiles = uploadedFiles.length > 0;
-      document.getElementById('controlsSection1').style.display = hasFiles ? 'block' : 'none';
-      document.getElementById('previewSection1').style.display = hasFiles ? 'block' : 'none';
-      document.getElementById('fileListSection1').style.display = hasFiles ? 'block' : 'none';
-      document.getElementById('buttonsSection1').style.display = hasFiles ? 'block' : 'none';
-      document.getElementById('statsSection1').classList.toggle('show', hasFiles);
-      document.getElementById('statUpload1').textContent = uploadedFiles.length;
-      updateFileList1();
-    }
-
-    function updateFileList1() {
-      const fileList = document.getElementById('fileList1');
-      fileList.innerHTML = uploadedFiles.map(fd => `
-        <div class="file-item">
-          <span class="file-name">${fd.file.name}</span>
-          <div class="file-status">
-            ${fd.status === 'processing' ? '<div class="spinner"></div>' : ''}
-            <span class="status-badge ${fd.status === 'done' ? 'done' : 'processing'}">
-              ${fd.status === 'done' ? '✓ Done' : 'Pending'}
-            </span>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    document.getElementById('qualitySlider').addEventListener('input', (e) => {
-      document.getElementById('qualityValue').textContent = e.target.value + '%';
-    });
-
-    document.getElementById('convertBtn1').addEventListener('click', async () => {
-      const btn = document.getElementById('convertBtn1');
-      btn.disabled = true;
-      btn.textContent = '⏳ Converting...';
-
-      for (let file of uploadedFiles) {
-        file.status = 'processing';
-        updateFileList1();
-        await convertImage1(file);
-        file.status = 'done';
-        updateFileList1();
+    function setYoutubeDimension(width, height, element) {
+      document.querySelectorAll('#youtubeThumbnail .dimension-box').forEach(el => el.classList.remove('active'));
+      element.classList.add('active');
+      
+      if (width && height) {
+        document.getElementById('youtubeWidth').value = width;
+        document.getElementById('youtubeHeight').value = height;
       }
-
-      document.getElementById('statProcessed1').textContent = uploadedFiles.filter(f => f.status === 'done').length;
-      btn.disabled = false;
-      btn.textContent = '⚡ Convert All';
-      showAlert('✓ All images converted successfully!', 'success');
-    });
-
-    function convertImage1(fileData) {
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const img = new Image();
-          img.onload = () => {
-            const canvas = document.createElement('canvas');
-            let width = parseInt(document.getElementById('widthInput').value) || img.naturalWidth;
-            let height = parseInt(document.getElementById('heightInput').value) || img.naturalHeight;
-
-            if (document.getElementById('maintainAspect').checked && document.getElementById('widthInput').value && !document.getElementById('heightInput').value) {
-              height = (width / img.naturalWidth) * img.naturalHeight;
-            }
-
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, width, height);
-
-            const format = document.getElementById('formatSelect').value;
-            const quality = format === 'image/png' ? 1 : parseInt(document.getElementById('qualitySlider').value) / 100;
-
-            canvas.toBlob((blob) => {
-              const url = URL.createObjectURL(blob);
-              const a = document.createElement('a');
-              a.href = url;
-              a.download = fileData.file.name.split('.')[0] + (format === 'image/png' ? '.png' : format === 'image/jpeg' ? '.jpg' : '.webp');
-              document.body.appendChild(a);
-              a.click();
-              document.body.removeChild(a);
-              URL.revokeObjectURL(url);
-              resolve();
-            }, format, quality);
-          };
-          img.src = e.target.result;
-        };
-        reader.readAsDataURL(fileData.file);
-      });
+      processYoutubeThumbnail();
     }
 
-    document.getElementById('clearBtn1').addEventListener('click', () => {
-      uploadedFiles = [];
-      fileInput1.value = '';
-      document.getElementById('originalPreview1').classList.remove('active');
-      updateUI1();
-    });
-
-    // ========== TAB 2: COMPRESS ==========
-    const uploadArea2 = document.getElementById('uploadArea2');
-    const fileInput2 = document.getElementById('fileInput2');
-    let compressFile = null;
-    let compressedBlob = null;
-
-    uploadArea2.addEventListener('click', () => fileInput2.click());
-    uploadArea2.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      uploadArea2.classList.add('active');
-    });
-    uploadArea2.addEventListener('dragleave', () => uploadArea2.classList.remove('active'));
-    uploadArea2.addEventListener('drop', (e) => {
-      e.preventDefault();
-      uploadArea2.classList.remove('active');
-      handleFiles2(e.dataTransfer.files);
-    });
-
-    fileInput2.addEventListener('change', (e) => handleFiles2(e.target.files));
-
-    function handleFiles2(files) {
-      if (files.length === 0) return;
-      compressFile = files[0];
+    function processYoutubeThumbnail() {
+      if (!youtubeThumbFile) return;
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new Image();
         img.onload = () => {
-          document.getElementById('compressOriginal').src = img.src;
-          document.getElementById('compressOriginalInfo').innerHTML = `
-            <div class="info-row">
-              <span>Size:</span>
-              <span>${formatFileSize(compressFile.size)}</span>
-            </div>
-          `;
-          document.getElementById('controlsSection2').style.display = 'block';
-          document.getElementById('previewSection2').style.display = 'block';
-          document.getElementById('buttonsSection2').style.display = 'block';
-          performCompress();
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(compressFile);
-    }
-
-    document.getElementById('compressQuality').addEventListener('input', (e) => {
-      document.getElementById('compressQualityValue').textContent = e.target.value + '%';
-      performCompress();
-    });
-
-    document.getElementById('maxWidth').addEventListener('input', performCompress);
-    document.getElementById('maxHeight').addEventListener('input', performCompress);
-
-    function performCompress() {
-      if (!compressFile) return;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-          const maxWidth = parseInt(document.getElementById('maxWidth').value);
-          const maxHeight = parseInt(document.getElementById('maxHeight').value);
-          let width = img.naturalWidth;
-          let height = img.naturalHeight;
-
-          if (width > maxWidth || height > maxHeight) {
-            const ratio = Math.min(maxWidth / width, maxHeight / height);
-            width *= ratio;
-            height *= ratio;
-          }
-
+          const width = parseInt(document.getElementById('youtubeWidth').value);
+          const height = parseInt(document.getElementById('youtubeHeight').value);
+          
           const canvas = document.createElement('canvas');
           canvas.width = width;
           canvas.height = height;
           const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-
-          const quality = parseInt(document.getElementById('compressQuality').value) / 100;
-          canvas.toBlob((blob) => {
-            compressedBlob = blob;
-            document.getElementById('compressCompressed').src = canvas.toDataURL('image/jpeg', quality);
-            document.getElementById('compressCompressedInfo').innerHTML = `
-              <div class="info-row">
-                <span>Size:</span>
-                <span>${formatFileSize(blob.size)}</span>
-              </div>
-              <div class="info-row">
-                <span>Saved:</span>
-                <span>${(((compressFile.size - blob.size) / compressFile.size) * 100).toFixed(1)}%</span>
-              </div>
-            `;
-          }, 'image/jpeg', quality);
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(compressFile);
-    }
-
-    document.getElementById('compressBtn').addEventListener('click', performCompress);
-
-    document.getElementById('downloadCompressed').addEventListener('click', () => {
-      if (!compressedBlob) {
-        showAlert('Please compress an image first', 'error');
-        return;
-      }
-      const url = URL.createObjectURL(compressedBlob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = compressFile.name.split('.')[0] + '_compressed.jpg';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    });
-
-    document.getElementById('clearBtn2').addEventListener('click', () => {
-      compressFile = null;
-      compressedBlob = null;
-      fileInput2.value = '';
-      document.getElementById('controlsSection2').style.display = 'none';
-      document.getElementById('previewSection2').style.display = 'none';
-      document.getElementById('buttonsSection2').style.display = 'none';
-    });
-
-    // ========== TAB 3: REMOVE BACKGROUND ==========
-    const uploadArea3 = document.getElementById('uploadArea3');
-    const fileInput3 = document.getElementById('fileInput3');
-    let removebgFile = null;
-    let removebgResult = null;
-
-    uploadArea3.addEventListener('click', () => fileInput3.click());
-    uploadArea3.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      uploadArea3.classList.add('active');
-    });
-    uploadArea3.addEventListener('dragleave', () => uploadArea3.classList.remove('active'));
-    uploadArea3.addEventListener('drop', (e) => {
-      e.preventDefault();
-      uploadArea3.classList.remove('active');
-      handleFiles3(e.dataTransfer.files);
-    });
-
-    fileInput3.addEventListener('change', (e) => handleFiles3(e.target.files));
-
-    function handleFiles3(files) {
-      if (files.length === 0) return;
-      removebgFile = files[0];
-      if (removebgFile.size > 25 * 1024 * 1024) {
-        showAlert('File must be less than 25MB', 'error');
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-          document.getElementById('removebgOriginal').src = img.src;
-          document.getElementById('previewSection3').style.display = 'block';
-          document.getElementById('buttonsSection3').style.display = 'block';
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(removebgFile);
-    }
-
-    document.getElementById('removebgBtn').addEventListener('click', async () => {
-      if (!removebgFile) {
-        showAlert('Please select an image', 'error');
-        return;
-      }
-
-      const btn = document.getElementById('removebgBtn');
-      btn.disabled = true;
-      btn.textContent = '⏳ Processing...';
-
-      try {
-        const formData = new FormData();
-        formData.append('image_file', removebgFile);
-
-        // Using free remove.bg API (Note: requires API key, using a fallback method)
-        // For demo, using a simple edge detection approach
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const img = new Image();
-          img.onload = () => {
-            const canvas = document.createElement('canvas');
-            canvas.width = img.naturalWidth;
-            canvas.height = img.naturalHeight;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0);
-
-            // Simple background removal using color detection
-            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            const data = imageData.data;
-
-            // Get the most common color (background color)
-            const colorMap = {};
-            for (let i = 0; i < data.length; i += 4) {
-              const key = `${data[i]},${data[i+1]},${data[i+2]}`;
-              colorMap[key] = (colorMap[key] || 0) + 1;
-            }
-            const bgColor = Object.keys(colorMap).reduce((a, b) => colorMap[a] > colorMap[b] ? a : b);
-            const [bgR, bgG, bgB] = bgColor.split(',').map(Number);
-
-            // Remove background color with tolerance
-            const tolerance = 30;
-            for (let i = 0; i < data.length; i += 4) {
-              const r = data[i], g = data[i+1], b = data[i+2];
-              if (Math.abs(r - bgR) < tolerance && Math.abs(g - bgG) < tolerance && Math.abs(b - bgB) < tolerance) {
-                data[i+3] = 0; // Set alpha to 0 (transparent)
-              }
-            }
-
-            ctx.putImageData(imageData, 0, 0);
-            removebgResult = canvas.toDataURL('image/png');
-            document.getElementById('removebgResult').src = removebgResult;
-            showAlert('✓ Background removed successfully!', 'success');
-            btn.disabled = false;
-            btn.textContent = '✂️ Remove Background';
-          };
-          img.src = e.target.result;
-        };
-        reader.readAsDataURL(removebgFile);
-      } catch (error) {
-        showAlert('Error: ' + error.message, 'error');
-        btn.disabled = false;
-        btn.textContent = '✂️ Remove Background';
-      }
-    });
-
-    document.getElementById('downloadRemovebg').addEventListener('click', () => {
-      if (!removebgResult) {
-        showAlert('Please process an image first', 'error');
-        return;
-      }
-      const link = document.createElement('a');
-      link.href = removebgResult;
-      link.download = removebgFile.name.split('.')[0] + '_no_bg.png';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    });
-
-    document.getElementById('clearBtn3').addEventListener('click', () => {
-      removebgFile = null;
-      removebgResult = null;
-      fileInput3.value = '';
-      document.getElementById('previewSection3').style.display = 'none';
-      document.getElementById('buttonsSection3').style.display = 'none';
-    });
-
-    // ========== TAB 4: TRANSPARENT BACKGROUND ==========
-    const uploadArea4 = document.getElementById('uploadArea4');
-    const fileInput4 = document.getElementById('fileInput4');
-    let transparentFile = null;
-    let transparentResult = null;
-
-    uploadArea4.addEventListener('click', () => fileInput4.click());
-    uploadArea4.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      uploadArea4.classList.add('active');
-    });
-    uploadArea4.addEventListener('dragleave', () => uploadArea4.classList.remove('active'));
-    uploadArea4.addEventListener('drop', (e) => {
-      e.preventDefault();
-      uploadArea4.classList.remove('active');
-      handleFiles4(e.dataTransfer.files);
-    });
-
-    fileInput4.addEventListener('change', (e) => handleFiles4(e.target.files));
-
-    function handleFiles4(files) {
-      if (files.length === 0) return;
-      transparentFile = files[0];
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-          document.getElementById('transparentOriginal').src = img.src;
-          document.getElementById('controlsSection4').style.display = 'block';
-          document.getElementById('previewSection4').style.display = 'block';
-          document.getElementById('buttonsSection4').style.display = 'block';
-          performTransparent();
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(transparentFile);
-    }
-
-    document.getElementById('colorPicker').addEventListener('input', performTransparent);
-    document.getElementById('tolerance').addEventListener('input', (e) => {
-      document.getElementById('toleranceValue').textContent = e.target.value;
-      performTransparent();
-    });
-
-    function performTransparent() {
-      if (!transparentFile) return;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          canvas.width = img.naturalWidth;
-          canvas.height = img.naturalHeight;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0);
-
-          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          const data = imageData.data;
-
-          const color = document.getElementById('colorPicker').value;
-          const r = parseInt(color.substr(1, 2), 16);
-          const g = parseInt(color.substr(3, 2), 16);
-          const b = parseInt(color.substr(5, 2), 16);
-          const tolerance = parseInt(document.getElementById('tolerance').value);
-
-          for (let i = 0; i < data.length; i += 4) {
-            if (Math.abs(data[i] - r) < tolerance && Math.abs(data[i+1] - g) < tolerance && Math.abs(data[i+2] - b) < tolerance) {
-              data[i+3] = 0;
-            }
+          
+          // Calculate best fit
+          const sourceRatio = img.naturalWidth / img.naturalHeight;
+          const targetRatio = width / height;
+          let sx, sy, swidth, sheight;
+          
+          if (sourceRatio > targetRatio) {
+            sheight = img.naturalHeight;
+            swidth = sheight * targetRatio;
+            sx = (img.naturalWidth - swidth) / 2;
+            sy = 0;
+          } else {
+            swidth = img.naturalWidth;
+            sheight = swidth / targetRatio;
+            sx = 0;
+            sy = (img.naturalHeight - sheight) / 2;
           }
-
-          ctx.putImageData(imageData, 0, 0);
-          transparentResult = canvas.toDataURL('image/png');
-          document.getElementById('transparentResult').src = transparentResult;
+          
+          ctx.drawImage(img, sx, sy, swidth, sheight, 0, 0, width, height);
+          
+          const quality = parseInt(document.getElementById('youtubeQuality').value) / 100;
+          youtubeThumbResult = canvas.toDataURL('image/jpeg', quality);
+          document.getElementById('youtubeThumbnailPreview').src = youtubeThumbResult;
+          document.getElementById('youtubeThumbnailInfo').innerHTML = `
+            <div class="info-row">
+              <span>Dimensions:</span>
+              <span>${width} × ${height}px</span>
+            </div>
+            <div class="info-row">
+              <span>Format:</span>
+              <span>JPEG</span>
+            </div>
+          `;
         };
         img.src = e.target.result;
       };
-      reader.readAsDataURL(transparentFile);
+      reader.readAsDataURL(youtubeThumbFile);
     }
 
-    document.getElementById('transparentBtn').addEventListener('click', performTransparent);
+    document.getElementById('youtubeQuality').addEventListener('input', (e) => {
+      document.getElementById('youtubeQualityValue').textContent = e.target.value + '%';
+      processYoutubeThumbnail();
+    });
 
-    document.getElementById('downloadTransparent').addEventListener('click', () => {
-      if (!transparentResult) {
-        showAlert('Please create a transparent image first', 'error');
+    document.getElementById('youtubeWidth').addEventListener('input', processYoutubeThumbnail);
+    document.getElementById('youtubeHeight').addEventListener('input', processYoutubeThumbnail);
+
+    document.getElementById('youtubeThumbProcessBtn').addEventListener('click', processYoutubeThumbnail);
+
+    document.getElementById('downloadYoutubeThumbnail').addEventListener('click', () => {
+      if (!youtubeThumbResult) {
+        showAlert('Please create a thumbnail first', 'error');
         return;
       }
       const link = document.createElement('a');
-      link.href = transparentResult;
-      link.download = transparentFile.name.split('.')[0] + '_transparent.png';
+      link.href = youtubeThumbResult;
+      link.download = youtubeThumbFile.name.split('.')[0] + '_youtube_thumbnail.jpg';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      showAlert('✓ Thumbnail downloaded!', 'success');
     });
 
-    document.getElementById('clearBtn4').addEventListener('click', () => {
-      transparentFile = null;
-      transparentResult = null;
-      fileInput4.value = '';
-      document.getElementById('controlsSection4').style.display = 'none';
-      document.getElementById('previewSection4').style.display = 'none';
-      document.getElementById('buttonsSection4').style.display = 'none';
+    document.getElementById('clearYoutubeThumbnail').addEventListener('click', () => {
+      youtubeThumbFile = null;
+      youtubeThumbResult = null;
+      fileInputYoutube.value = '';
+      document.getElementById('youtubeControlsSection').style.display = 'none';
+      document.getElementById('youtubePreviewSection').style.display = 'none';
+      document.getElementById('youtubeButtonsSection').style.display = 'none';
+    });
+
+    // ========== YOUTUBE BANNER ==========
+    const uploadAreaBanner = document.getElementById('uploadAreaBanner');
+    const fileInputBanner = document.getElementById('fileInputBanner');
+    let bannerFile = null;
+    let bannerResult = null;
+
+    uploadAreaBanner.addEventListener('click', () => fileInputBanner.click());
+    uploadAreaBanner.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadAreaBanner.classList.add('active');
+    });
+    uploadAreaBanner.addEventListener('dragleave', () => uploadAreaBanner.classList.remove('active'));
+    uploadAreaBanner.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadAreaBanner.classList.remove('active');
+      handleBannerFiles(e.dataTransfer.files);
+    });
+
+    fileInputBanner.addEventListener('change', (e) => handleBannerFiles(e.target.files));
+
+    function handleBannerFiles(files) {
+      if (files.length === 0) return;
+      bannerFile = files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          document.getElementById('bannerOriginal').src = img.src;
+          document.getElementById('bannerOriginalInfo').innerHTML = `
+            <div class="info-row">
+              <span>Dimensions:</span>
+              <span>${img.naturalWidth} × ${img.naturalHeight}px</span>
+            </div>
+            <div class="info-row">
+              <span>Size:</span>
+              <span>${formatFileSize(bannerFile.size)}</span>
+            </div>
+          `;
+          document.getElementById('bannerControlsSection').style.display = 'block';
+          document.getElementById('bannerPreviewSection').style.display = 'block';
+          document.getElementById('bannerButtonsSection').style.display = 'block';
+          processBanner();
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(bannerFile);
+    }
+
+    function setBannerDimension(width, height, element) {
+      document.querySelectorAll('#youtubeBanner .dimension-box').forEach(el => el.classList.remove('active'));
+      element.classList.add('active');
+      
+      if (width && height) {
+        document.getElementById('bannerWidth').value = width;
+        document.getElementById('bannerHeight').value = height;
+      }
+      processBanner();
+    }
+
+    function processBanner() {
+      if (!bannerFile) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const width = parseInt(document.getElementById('bannerWidth').value);
+          const height = parseInt(document.getElementById('bannerHeight').value);
+          
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          
+          // Calculate best fit
+          const sourceRatio = img.naturalWidth / img.naturalHeight;
+          const targetRatio = width / height;
+          let sx, sy, swidth, sheight;
+          
+          if (sourceRatio > targetRatio) {
+            sheight = img.naturalHeight;
+            swidth = sheight * targetRatio;
+            sx = (img.naturalWidth - swidth) / 2;
+            sy = 0;
+          } else {
+            swidth = img.naturalWidth;
+            sheight = swidth / targetRatio;
+            sx = 0;
+            sy = (img.naturalHeight - sheight) / 2;
+          }
+          
+          ctx.drawImage(img, sx, sy, swidth, sheight, 0, 0, width, height);
+          
+          const quality = parseInt(document.getElementById('bannerQuality').value) / 100;
+          bannerResult = canvas.toDataURL('image/jpeg', quality);
+          document.getElementById('bannerPreview').src = bannerResult;
+          document.getElementById('bannerPreviewInfo').innerHTML = `
+            <div class="info-row">
+              <span>Dimensions:</span>
+              <span>${width} × ${height}px</span>
+            </div>
+            <div class="info-row">
+              <span>Format:</span>
+              <span>JPEG</span>
+            </div>
+          `;
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(bannerFile);
+    }
+
+    document.getElementById('bannerQuality').addEventListener('input', (e) => {
+      document.getElementById('bannerQualityValue').textContent = e.target.value + '%';
+      processBanner();
+    });
+
+    document.getElementById('bannerWidth').addEventListener('input', processBanner);
+    document.getElementById('bannerHeight').addEventListener('input', processBanner);
+
+    document.getElementById('bannerProcessBtn').addEventListener('click', processBanner);
+
+    document.getElementById('downloadBanner').addEventListener('click', () => {
+      if (!bannerResult) {
+        showAlert('Please create a banner first', 'error');
+        return;
+      }
+      const link = document.createElement('a');
+      link.href = bannerResult;
+      link.download = bannerFile.name.split('.')[0] + '_youtube_banner.jpg';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showAlert('✓ Banner downloaded!', 'success');
+    });
+
+    document.getElementById('clearBanner').addEventListener('click', () => {
+      bannerFile = null;
+      bannerResult = null;
+      fileInputBanner.value = '';
+      document.getElementById('bannerControlsSection').style.display = 'none';
+      document.getElementById('bannerPreviewSection').style.display = 'none';
+      document.getElementById('bannerButtonsSection').style.display = 'none';
     });
   </script>
 </body>
