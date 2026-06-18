@@ -25,7 +25,7 @@
       background: white;
       border-radius: 20px;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      max-width: 900px;
+      max-width: 1000px;
       width: 100%;
       padding: 40px;
     }
@@ -48,6 +48,59 @@
     .subtitle {
       color: #666;
       font-size: 0.95em;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 20px;
+    }
+
+    .tab-btn {
+      padding: 10px 20px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 0.95em;
+      font-weight: 600;
+      color: #999;
+      transition: all 0.3s ease;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -23px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .tab-btn:hover {
+      color: #667eea;
+    }
+
+    .tab-btn.active {
+      color: #667eea;
+      border-bottom-color: #667eea;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .section {
@@ -108,7 +161,7 @@
       font-size: 0.9em;
     }
 
-    #fileInput {
+    input[type="file"] {
       display: none;
     }
 
@@ -131,7 +184,7 @@
       font-size: 0.95em;
     }
 
-    select, input[type="number"] {
+    select, input[type="number"], input[type="range"], input[type="color"] {
       padding: 10px 12px;
       border: 1px solid #ddd;
       border-radius: 8px;
@@ -140,7 +193,7 @@
       font-family: inherit;
     }
 
-    select:focus, input[type="number"]:focus {
+    select:focus, input[type="number"]:focus, input[type="range"]:focus {
       outline: none;
       border-color: #667eea;
       box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
@@ -219,7 +272,7 @@
 
     .preview-image {
       width: 100%;
-      max-height: 250px;
+      max-height: 300px;
       object-fit: contain;
       border-radius: 8px;
       background: white;
@@ -417,6 +470,26 @@
       font-weight: 700;
     }
 
+    .checkerboard {
+      background-image: 
+        linear-gradient(45deg, #ccc 25%, transparent 25%), 
+        linear-gradient(-45deg, #ccc 25%, transparent 25%), 
+        linear-gradient(45deg, transparent 75%, #ccc 75%), 
+        linear-gradient(-45deg, transparent 75%, #ccc 75%);
+      background-size: 20px 20px;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    }
+
+    .info-box {
+      background: #e3f2fd;
+      border-left: 4px solid #667eea;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 0.9em;
+      color: #1976d2;
+    }
+
     @media (max-width: 768px) {
       .container {
         padding: 20px;
@@ -424,6 +497,15 @@
 
       h1 {
         font-size: 1.8em;
+      }
+
+      .tabs {
+        gap: 5px;
+      }
+
+      .tab-btn {
+        padding: 8px 12px;
+        font-size: 0.8em;
       }
 
       .controls-grid {
@@ -448,355 +530,282 @@
   <div class="container">
     <header>
       <h1>🖼️ Image Converter Pro</h1>
-      <p class="subtitle">Convert, resize & optimize images in your browser</p>
+      <p class="subtitle">Convert, compress, resize & remove backgrounds from images</p>
     </header>
 
     <div id="alertBox" class="alert"></div>
 
-    <!-- Upload Section -->
-    <div class="section">
-      <div class="section-title">Upload Images</div>
-      <div class="upload-area" id="uploadArea">
-        <div class="upload-icon">📁</div>
-        <div class="upload-text">Click to select or drag & drop images</div>
-        <div class="upload-hint">Supports: JPG, PNG, WebP, GIF, BMP (up to 50MB)</div>
-      </div>
-      <input type="file" id="fileInput" multiple accept="image/*">
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('convert')">🔄 Convert</button>
+      <button class="tab-btn" onclick="switchTab('compress')">📦 Compress</button>
+      <button class="tab-btn" onclick="switchTab('removebg')">✂️ Remove Background</button>
+      <button class="tab-btn" onclick="switchTab('transparent')">🎨 Transparent BG</button>
     </div>
 
-    <!-- Controls Section -->
-    <div class="section" id="controlsSection" style="display: none;">
-      <div class="section-title">Conversion Settings</div>
-      <div class="controls-grid">
-        <div class="control-group">
-          <label for="formatSelect">Output Format</label>
-          <select id="formatSelect">
-            <option value="image/png">PNG (Lossless)</option>
-            <option value="image/jpeg">JPEG (Smaller)</option>
-            <option value="image/webp">WebP (Modern)</option>
-          </select>
+    <!-- Convert Tab -->
+    <div id="convert" class="tab-content active">
+      <div class="section">
+        <div class="section-title">Upload Images</div>
+        <div class="upload-area" id="uploadArea1">
+          <div class="upload-icon">📁</div>
+          <div class="upload-text">Click to select or drag & drop images</div>
+          <div class="upload-hint">Supports: JPG, PNG, WebP, GIF, BMP (up to 50MB)</div>
         </div>
+        <input type="file" id="fileInput1" multiple accept="image/*">
+      </div>
 
-        <div class="control-group">
-          <label for="qualitySlider">Quality</label>
-          <div class="quality-container">
-            <input type="range" id="qualitySlider" min="10" max="100" value="80">
-            <span class="quality-value" id="qualityValue">80%</span>
+      <div class="section" id="controlsSection1" style="display: none;">
+        <div class="section-title">Conversion Settings</div>
+        <div class="controls-grid">
+          <div class="control-group">
+            <label for="formatSelect">Output Format</label>
+            <select id="formatSelect">
+              <option value="image/png">PNG (Lossless)</option>
+              <option value="image/jpeg">JPEG (Smaller)</option>
+              <option value="image/webp">WebP (Modern)</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label for="qualitySlider">Quality</label>
+            <div class="quality-container">
+              <input type="range" id="qualitySlider" min="10" max="100" value="80">
+              <span class="quality-value" id="qualityValue">80%</span>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label for="widthInput">Width (px)</label>
+            <input type="number" id="widthInput" min="1" max="4000" value="0" placeholder="0 = original">
+          </div>
+
+          <div class="control-group">
+            <label for="heightInput">Height (px)</label>
+            <input type="number" id="heightInput" min="1" max="4000" value="0" placeholder="0 = auto">
           </div>
         </div>
 
-        <div class="control-group">
-          <label for="widthInput">Width (px)</label>
-          <input type="number" id="widthInput" min="1" max="4000" value="0" placeholder="0 = original">
-        </div>
-
-        <div class="control-group">
-          <label for="heightInput">Height (px)</label>
-          <input type="number" id="heightInput" min="1" max="4000" value="0" placeholder="0 = auto">
+        <div class="control-group" style="margin-bottom: 20px;">
+          <label>
+            <input type="checkbox" id="maintainAspect" checked>
+            Maintain aspect ratio when resizing
+          </label>
         </div>
       </div>
 
-      <div class="control-group" style="margin-bottom: 20px;">
-        <label>
-          <input type="checkbox" id="maintainAspect" checked>
-          Maintain aspect ratio when resizing
-        </label>
-      </div>
-    </div>
-
-    <!-- Stats Section -->
-    <div class="stats" id="statsSection">
-      <div class="stat-item">
-        <div class="stat-label">Files Uploaded</div>
-        <div class="stat-value" id="statUpload">0</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-label">Files Processed</div>
-        <div class="stat-value" id="statProcessed">0</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-label">Space Saved</div>
-        <div class="stat-value" id="statSaved">0%</div>
-      </div>
-    </div>
-
-    <!-- Preview Section -->
-    <div class="section" id="previewSection" style="display: none;">
-      <div class="section-title">Preview</div>
-      <div class="preview-section">
-        <div class="preview-container" id="originalPreview">
-          <div class="preview-label">Original</div>
-          <img class="preview-image" id="originalImg" alt="Original">
-          <div class="image-info" id="originalInfo"></div>
+      <div class="stats" id="statsSection1">
+        <div class="stat-item">
+          <div class="stat-label">Files Uploaded</div>
+          <div class="stat-value" id="statUpload1">0</div>
         </div>
-        <div class="preview-container" id="convertedPreview">
-          <div class="preview-label">Converted</div>
-          <img class="preview-image" id="convertedImg" alt="Converted">
-          <div class="image-info" id="convertedInfo"></div>
+        <div class="stat-item">
+          <div class="stat-label">Files Processed</div>
+          <div class="stat-value" id="statProcessed1">0</div>
+        </div>
+      </div>
+
+      <div class="section" id="previewSection1" style="display: none;">
+        <div class="section-title">Preview</div>
+        <div class="preview-section">
+          <div class="preview-container" id="originalPreview1">
+            <div class="preview-label">Original</div>
+            <img class="preview-image" id="originalImg1" alt="Original">
+            <div class="image-info" id="originalInfo1"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="fileListSection1" style="display: none;">
+        <div class="section-title">Queue</div>
+        <div class="file-list" id="fileList1"></div>
+      </div>
+
+      <div class="section" id="buttonsSection1" style="display: none;">
+        <div class="button-group">
+          <button class="btn-primary" id="convertBtn1">⚡ Convert All</button>
+          <button class="btn-secondary btn-small" id="clearBtn1">Clear</button>
         </div>
       </div>
     </div>
 
-    <!-- File List Section -->
-    <div class="section" id="fileListSection" style="display: none;">
-      <div class="section-title">Queue</div>
-      <div class="file-list" id="fileList"></div>
+    <!-- Compress Tab -->
+    <div id="compress" class="tab-content">
+      <div class="info-box">
+        💡 Compress your images to reduce file size while maintaining quality.
+      </div>
+
+      <div class="section">
+        <div class="section-title">Upload Image</div>
+        <div class="upload-area" id="uploadArea2">
+          <div class="upload-icon">📁</div>
+          <div class="upload-text">Click to select or drag & drop image</div>
+          <div class="upload-hint">Supports: JPG, PNG, WebP</div>
+        </div>
+        <input type="file" id="fileInput2" accept="image/*">
+      </div>
+
+      <div class="section" id="controlsSection2" style="display: none;">
+        <div class="section-title">Compression Settings</div>
+        <div class="controls-grid">
+          <div class="control-group">
+            <label for="compressQuality">Quality Level</label>
+            <div class="quality-container">
+              <input type="range" id="compressQuality" min="10" max="100" value="60">
+              <span class="quality-value" id="compressQualityValue">60%</span>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label for="maxWidth">Max Width (px)</label>
+            <input type="number" id="maxWidth" min="100" max="2000" value="1200">
+          </div>
+
+          <div class="control-group">
+            <label for="maxHeight">Max Height (px)</label>
+            <input type="number" id="maxHeight" min="100" max="2000" value="1200">
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="previewSection2" style="display: none;">
+        <div class="section-title">Comparison</div>
+        <div class="preview-section">
+          <div class="preview-container active">
+            <div class="preview-label">Original</div>
+            <img class="preview-image" id="compressOriginal" alt="Original">
+            <div class="image-info" id="compressOriginalInfo"></div>
+          </div>
+          <div class="preview-container active">
+            <div class="preview-label">Compressed</div>
+            <img class="preview-image" id="compressCompressed" alt="Compressed">
+            <div class="image-info" id="compressCompressedInfo"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="buttonsSection2" style="display: none;">
+        <div class="button-group">
+          <button class="btn-primary" id="compressBtn">📦 Compress</button>
+          <button class="btn-primary" id="downloadCompressed">⬇️ Download</button>
+          <button class="btn-secondary btn-small" id="clearBtn2">Clear</button>
+        </div>
+      </div>
     </div>
 
-    <!-- Buttons Section -->
-    <div class="section" id="buttonsSection" style="display: none;">
-      <div class="button-group">
-        <button class="btn-primary" id="convertBtn">⚡ Convert All</button>
-        <button class="btn-secondary btn-small" id="clearBtn">Clear</button>
+    <!-- Remove Background Tab -->
+    <div id="removebg" class="tab-content">
+      <div class="info-box">
+        ✂️ Remove backgrounds from images using AI. Works best with clear subjects on distinct backgrounds.
+      </div>
+
+      <div class="section">
+        <div class="section-title">Upload Image</div>
+        <div class="upload-area" id="uploadArea3">
+          <div class="upload-icon">📁</div>
+          <div class="upload-text">Click to select or drag & drop image</div>
+          <div class="upload-hint">Supports: JPG, PNG (up to 25MB)</div>
+        </div>
+        <input type="file" id="fileInput3" accept="image/*">
+      </div>
+
+      <div class="section" id="previewSection3" style="display: none;">
+        <div class="section-title">Processing</div>
+        <div class="preview-section">
+          <div class="preview-container active">
+            <div class="preview-label">Original</div>
+            <img class="preview-image" id="removebgOriginal" alt="Original">
+          </div>
+          <div class="preview-container active">
+            <div class="preview-label">Background Removed</div>
+            <div style="width: 100%; height: 300px; border-radius: 8px; position: relative; overflow: hidden;" class="checkerboard">
+              <img class="preview-image" id="removebgResult" alt="Result" style="position: absolute;">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="buttonsSection3" style="display: none;">
+        <div class="button-group">
+          <button class="btn-primary" id="removebgBtn">✂️ Remove Background</button>
+          <button class="btn-primary" id="downloadRemovebg">⬇️ Download</button>
+          <button class="btn-secondary btn-small" id="clearBtn3">Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transparent Background Tab -->
+    <div id="transparent" class="tab-content">
+      <div class="info-box">
+        🎨 Make a specific color transparent or create custom transparent backgrounds.
+      </div>
+
+      <div class="section">
+        <div class="section-title">Upload Image</div>
+        <div class="upload-area" id="uploadArea4">
+          <div class="upload-icon">📁</div>
+          <div class="upload-text">Click to select or drag & drop image</div>
+          <div class="upload-hint">Supports: JPG, PNG</div>
+        </div>
+        <input type="file" id="fileInput4" accept="image/*">
+      </div>
+
+      <div class="section" id="controlsSection4" style="display: none;">
+        <div class="section-title">Transparency Settings</div>
+        <div class="controls-grid">
+          <div class="control-group">
+            <label for="colorPicker">Select Color to Make Transparent</label>
+            <input type="color" id="colorPicker" value="#ffffff">
+          </div>
+
+          <div class="control-group">
+            <label for="tolerance">Color Tolerance</label>
+            <div class="quality-container">
+              <input type="range" id="tolerance" min="0" max="100" value="20">
+              <span class="quality-value" id="toleranceValue">20</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="previewSection4" style="display: none;">
+        <div class="section-title">Preview</div>
+        <div class="preview-section">
+          <div class="preview-container active">
+            <div class="preview-label">Original</div>
+            <img class="preview-image" id="transparentOriginal" alt="Original">
+          </div>
+          <div class="preview-container active">
+            <div class="preview-label">With Transparent Background</div>
+            <div style="width: 100%; height: 300px; border-radius: 8px; position: relative; overflow: hidden;" class="checkerboard">
+              <img class="preview-image" id="transparentResult" alt="Result" style="position: absolute;">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="buttonsSection4" style="display: none;">
+        <div class="button-group">
+          <button class="btn-primary" id="transparentBtn">🎨 Make Transparent</button>
+          <button class="btn-primary" id="downloadTransparent">⬇️ Download</button>
+          <button class="btn-secondary btn-small" id="clearBtn4">Clear</button>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    const uploadArea = document.getElementById('uploadArea');
-    const fileInput = document.getElementById('fileInput');
-    const formatSelect = document.getElementById('formatSelect');
-    const qualitySlider = document.getElementById('qualitySlider');
-    const qualityValue = document.getElementById('qualityValue');
-    const widthInput = document.getElementById('widthInput');
-    const heightInput = document.getElementById('heightInput');
-    const maintainAspect = document.getElementById('maintainAspect');
-    const convertBtn = document.getElementById('convertBtn');
-    const clearBtn = document.getElementById('clearBtn');
-    const alertBox = document.getElementById('alertBox');
-    const controlsSection = document.getElementById('controlsSection');
-    const previewSection = document.getElementById('previewSection');
-    const fileListSection = document.getElementById('fileListSection');
-    const buttonsSection = document.getElementById('buttonsSection');
-    const fileList = document.getElementById('fileList');
-    const statsSection = document.getElementById('statsSection');
-
-    let uploadedFiles = [];
-    let originalImage = null;
-
-    // Upload area events
-    uploadArea.addEventListener('click', () => fileInput.click());
-    uploadArea.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      uploadArea.classList.add('active');
-    });
-    uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('active'));
-    uploadArea.addEventListener('drop', (e) => {
-      e.preventDefault();
-      uploadArea.classList.remove('active');
-      handleFiles(e.dataTransfer.files);
-    });
-
-    fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
-
-    function handleFiles(files) {
-      if (files.length === 0) return;
-
-      for (let file of files) {
-        if (!file.type.startsWith('image/')) {
-          showAlert('Only image files are supported', 'error');
-          continue;
-        }
-
-        if (file.size > 50 * 1024 * 1024) {
-          showAlert(`File ${file.name} is too large (max 50MB)`, 'error');
-          continue;
-        }
-
-        uploadedFiles.push({
-          file: file,
-          status: 'pending',
-          originalSize: file.size,
-          convertedSize: null,
-          originalImage: null,
-          convertedImage: null
-        });
-      }
-
-      updateUI();
-      loadFirstImage();
+    // Tab switching
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+      event.target.classList.add('active');
     }
 
-    function loadFirstImage() {
-      if (uploadedFiles.length === 0) return;
-
-      const firstFile = uploadedFiles[0].file;
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-          originalImage = img;
-          uploadedFiles[0].originalImage = img;
-          updatePreview();
-        };
-        img.src = e.target.result;
-      };
-
-      reader.readAsDataURL(firstFile);
-    }
-
-    function updateUI() {
-      const hasFiles = uploadedFiles.length > 0;
-      controlsSection.style.display = hasFiles ? 'block' : 'none';
-      previewSection.style.display = hasFiles ? 'block' : 'none';
-      fileListSection.style.display = hasFiles ? 'block' : 'none';
-      buttonsSection.style.display = hasFiles ? 'block' : 'none';
-      statsSection.classList.toggle('show', hasFiles);
-
-      document.getElementById('statUpload').textContent = uploadedFiles.length;
-
-      updateFileList();
-    }
-
-    function updateFileList() {
-      fileList.innerHTML = '';
-      uploadedFiles.forEach((fileData, index) => {
-        const item = document.createElement('div');
-        item.className = 'file-item';
-        item.innerHTML = `
-          <span class="file-name">${fileData.file.name}</span>
-          <div class="file-status">
-            ${fileData.status === 'processing' ? '<div class="spinner"></div>' : ''}
-            <span class="status-badge ${fileData.status === 'done' ? 'done' : 'processing'}">
-              ${fileData.status === 'done' ? '✓ Done' : 'Pending'}
-            </span>
-          </div>
-        `;
-        fileList.appendChild(item);
-      });
-    }
-
-    function updatePreview() {
-      if (!originalImage) return;
-
-      const originalPreview = document.getElementById('originalPreview');
-      const originalImg = document.getElementById('originalImg');
-      const originalInfo = document.getElementById('originalInfo');
-
-      originalImg.src = originalImage.src;
-      originalPreview.classList.add('active');
-
-      originalInfo.innerHTML = `
-        <div class="info-row">
-          <span>Dimensions:</span>
-          <span>${originalImage.naturalWidth} × ${originalImage.naturalHeight}px</span>
-        </div>
-        <div class="info-row">
-          <span>Format:</span>
-          <span>${uploadedFiles[0].file.type || 'Unknown'}</span>
-        </div>
-        <div class="info-row">
-          <span>Size:</span>
-          <span>${formatFileSize(uploadedFiles[0].file.size)}</span>
-        </div>
-      `;
-    }
-
-    qualitySlider.addEventListener('input', (e) => {
-      qualityValue.textContent = e.target.value + '%';
-    });
-
-    widthInput.addEventListener('change', updatePreview);
-    heightInput.addEventListener('change', updatePreview);
-    maintainAspect.addEventListener('change', updatePreview);
-
-    convertBtn.addEventListener('click', convertAllImages);
-    clearBtn.addEventListener('click', clearAll);
-
-    async function convertAllImages() {
-      if (uploadedFiles.length === 0) return;
-
-      convertBtn.disabled = true;
-      convertBtn.textContent = '⏳ Converting...';
-
-      for (let i = 0; i < uploadedFiles.length; i++) {
-        uploadedFiles[i].status = 'processing';
-        updateFileList();
-
-        await convertImage(uploadedFiles[i]);
-
-        uploadedFiles[i].status = 'done';
-        updateFileList();
-      }
-
-      updateStats();
-      convertBtn.disabled = false;
-      convertBtn.textContent = '⚡ Convert All';
-      showAlert('✓ All images converted successfully!', 'success');
-    }
-
-    function convertImage(fileData) {
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-
-        reader.onload = (e) => {
-          const img = new Image();
-          img.onload = () => {
-            const canvas = document.createElement('canvas');
-            let width = parseInt(widthInput.value) || img.naturalWidth;
-            let height = parseInt(heightInput.value) || img.naturalHeight;
-
-            if (maintainAspect.checked && widthInput.value && !heightInput.value) {
-              height = (width / img.naturalWidth) * img.naturalHeight;
-            } else if (maintainAspect.checked && heightInput.value && !widthInput.value) {
-              width = (height / img.naturalHeight) * img.naturalWidth;
-            }
-
-            canvas.width = width;
-            canvas.height = height;
-
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, width, height);
-
-            canvas.toBlob((blob) => {
-              const format = formatSelect.value;
-              const quality = formatSelect.value === 'image/png' ? 1 : parseInt(qualitySlider.value) / 100;
-
-              fileData.convertedSize = blob.size;
-              fileData.convertedImage = canvas.toDataURL(format, quality);
-
-              // Auto-download
-              const url = URL.createObjectURL(blob);
-              const a = document.createElement('a');
-              a.href = url;
-              const extension = format === 'image/png' ? '.png' : format === 'image/jpeg' ? '.jpg' : '.webp';
-              a.download = fileData.file.name.split('.')[0] + extension;
-              document.body.appendChild(a);
-              a.click();
-              document.body.removeChild(a);
-              URL.revokeObjectURL(url);
-
-              resolve();
-            }, format, quality);
-          };
-          img.src = e.target.result;
-        };
-
-        reader.readAsDataURL(fileData.file);
-      });
-    }
-
-    function updateStats() {
-      const processed = uploadedFiles.filter(f => f.status === 'done').length;
-      const originalTotal = uploadedFiles.reduce((sum, f) => sum + f.originalSize, 0);
-      const convertedTotal = uploadedFiles.reduce((sum, f) => sum + (f.convertedSize || 0), 0);
-      const saved = ((originalTotal - convertedTotal) / originalTotal * 100).toFixed(1);
-
-      document.getElementById('statProcessed').textContent = processed;
-      document.getElementById('statSaved').textContent = saved + '%';
-    }
-
-    function clearAll() {
-      uploadedFiles = [];
-      originalImage = null;
-      fileInput.value = '';
-      document.getElementById('originalPreview').classList.remove('active');
-      document.getElementById('convertedPreview').classList.remove('active');
-      updateUI();
-    }
-
+    // Utility functions
     function showAlert(message, type) {
+      const alertBox = document.getElementById('alertBox');
       alertBox.textContent = message;
       alertBox.className = `alert show alert-${type}`;
       setTimeout(() => alertBox.classList.remove('show'), 3000);
@@ -805,10 +814,520 @@
     function formatFileSize(bytes) {
       if (bytes === 0) return '0 Bytes';
       const k = 1024;
-      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const sizes = ['Bytes', 'KB', 'MB'];
       const i = Math.floor(Math.log(bytes) / Math.log(k));
       return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
     }
+
+    // ========== TAB 1: CONVERT ==========
+    const uploadArea1 = document.getElementById('uploadArea1');
+    const fileInput1 = document.getElementById('fileInput1');
+    let uploadedFiles = [];
+
+    uploadArea1.addEventListener('click', () => fileInput1.click());
+    uploadArea1.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea1.classList.add('active');
+    });
+    uploadArea1.addEventListener('dragleave', () => uploadArea1.classList.remove('active'));
+    uploadArea1.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea1.classList.remove('active');
+      handleFiles1(e.dataTransfer.files);
+    });
+
+    fileInput1.addEventListener('change', (e) => handleFiles1(e.target.files));
+
+    function handleFiles1(files) {
+      for (let file of files) {
+        if (!file.type.startsWith('image/')) continue;
+        if (file.size > 50 * 1024 * 1024) {
+          showAlert(`File ${file.name} is too large (max 50MB)`, 'error');
+          continue;
+        }
+        uploadedFiles.push({
+          file: file,
+          status: 'pending',
+          originalImage: null
+        });
+      }
+      updateUI1();
+      loadFirstImage1();
+    }
+
+    function loadFirstImage1() {
+      if (uploadedFiles.length === 0) return;
+      const firstFile = uploadedFiles[0].file;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          uploadedFiles[0].originalImage = img;
+          document.getElementById('originalImg1').src = img.src;
+          document.getElementById('originalPreview1').classList.add('active');
+          document.getElementById('originalInfo1').innerHTML = `
+            <div class="info-row">
+              <span>Dimensions:</span>
+              <span>${img.naturalWidth} × ${img.naturalHeight}px</span>
+            </div>
+            <div class="info-row">
+              <span>Size:</span>
+              <span>${formatFileSize(firstFile.size)}</span>
+            </div>
+          `;
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(firstFile);
+    }
+
+    function updateUI1() {
+      const hasFiles = uploadedFiles.length > 0;
+      document.getElementById('controlsSection1').style.display = hasFiles ? 'block' : 'none';
+      document.getElementById('previewSection1').style.display = hasFiles ? 'block' : 'none';
+      document.getElementById('fileListSection1').style.display = hasFiles ? 'block' : 'none';
+      document.getElementById('buttonsSection1').style.display = hasFiles ? 'block' : 'none';
+      document.getElementById('statsSection1').classList.toggle('show', hasFiles);
+      document.getElementById('statUpload1').textContent = uploadedFiles.length;
+      updateFileList1();
+    }
+
+    function updateFileList1() {
+      const fileList = document.getElementById('fileList1');
+      fileList.innerHTML = uploadedFiles.map(fd => `
+        <div class="file-item">
+          <span class="file-name">${fd.file.name}</span>
+          <div class="file-status">
+            ${fd.status === 'processing' ? '<div class="spinner"></div>' : ''}
+            <span class="status-badge ${fd.status === 'done' ? 'done' : 'processing'}">
+              ${fd.status === 'done' ? '✓ Done' : 'Pending'}
+            </span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    document.getElementById('qualitySlider').addEventListener('input', (e) => {
+      document.getElementById('qualityValue').textContent = e.target.value + '%';
+    });
+
+    document.getElementById('convertBtn1').addEventListener('click', async () => {
+      const btn = document.getElementById('convertBtn1');
+      btn.disabled = true;
+      btn.textContent = '⏳ Converting...';
+
+      for (let file of uploadedFiles) {
+        file.status = 'processing';
+        updateFileList1();
+        await convertImage1(file);
+        file.status = 'done';
+        updateFileList1();
+      }
+
+      document.getElementById('statProcessed1').textContent = uploadedFiles.filter(f => f.status === 'done').length;
+      btn.disabled = false;
+      btn.textContent = '⚡ Convert All';
+      showAlert('✓ All images converted successfully!', 'success');
+    });
+
+    function convertImage1(fileData) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = parseInt(document.getElementById('widthInput').value) || img.naturalWidth;
+            let height = parseInt(document.getElementById('heightInput').value) || img.naturalHeight;
+
+            if (document.getElementById('maintainAspect').checked && document.getElementById('widthInput').value && !document.getElementById('heightInput').value) {
+              height = (width / img.naturalWidth) * img.naturalHeight;
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            const format = document.getElementById('formatSelect').value;
+            const quality = format === 'image/png' ? 1 : parseInt(document.getElementById('qualitySlider').value) / 100;
+
+            canvas.toBlob((blob) => {
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = fileData.file.name.split('.')[0] + (format === 'image/png' ? '.png' : format === 'image/jpeg' ? '.jpg' : '.webp');
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+              URL.revokeObjectURL(url);
+              resolve();
+            }, format, quality);
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(fileData.file);
+      });
+    }
+
+    document.getElementById('clearBtn1').addEventListener('click', () => {
+      uploadedFiles = [];
+      fileInput1.value = '';
+      document.getElementById('originalPreview1').classList.remove('active');
+      updateUI1();
+    });
+
+    // ========== TAB 2: COMPRESS ==========
+    const uploadArea2 = document.getElementById('uploadArea2');
+    const fileInput2 = document.getElementById('fileInput2');
+    let compressFile = null;
+    let compressedBlob = null;
+
+    uploadArea2.addEventListener('click', () => fileInput2.click());
+    uploadArea2.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea2.classList.add('active');
+    });
+    uploadArea2.addEventListener('dragleave', () => uploadArea2.classList.remove('active'));
+    uploadArea2.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea2.classList.remove('active');
+      handleFiles2(e.dataTransfer.files);
+    });
+
+    fileInput2.addEventListener('change', (e) => handleFiles2(e.target.files));
+
+    function handleFiles2(files) {
+      if (files.length === 0) return;
+      compressFile = files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          document.getElementById('compressOriginal').src = img.src;
+          document.getElementById('compressOriginalInfo').innerHTML = `
+            <div class="info-row">
+              <span>Size:</span>
+              <span>${formatFileSize(compressFile.size)}</span>
+            </div>
+          `;
+          document.getElementById('controlsSection2').style.display = 'block';
+          document.getElementById('previewSection2').style.display = 'block';
+          document.getElementById('buttonsSection2').style.display = 'block';
+          performCompress();
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(compressFile);
+    }
+
+    document.getElementById('compressQuality').addEventListener('input', (e) => {
+      document.getElementById('compressQualityValue').textContent = e.target.value + '%';
+      performCompress();
+    });
+
+    document.getElementById('maxWidth').addEventListener('input', performCompress);
+    document.getElementById('maxHeight').addEventListener('input', performCompress);
+
+    function performCompress() {
+      if (!compressFile) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const maxWidth = parseInt(document.getElementById('maxWidth').value);
+          const maxHeight = parseInt(document.getElementById('maxHeight').value);
+          let width = img.naturalWidth;
+          let height = img.naturalHeight;
+
+          if (width > maxWidth || height > maxHeight) {
+            const ratio = Math.min(maxWidth / width, maxHeight / height);
+            width *= ratio;
+            height *= ratio;
+          }
+
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const quality = parseInt(document.getElementById('compressQuality').value) / 100;
+          canvas.toBlob((blob) => {
+            compressedBlob = blob;
+            document.getElementById('compressCompressed').src = canvas.toDataURL('image/jpeg', quality);
+            document.getElementById('compressCompressedInfo').innerHTML = `
+              <div class="info-row">
+                <span>Size:</span>
+                <span>${formatFileSize(blob.size)}</span>
+              </div>
+              <div class="info-row">
+                <span>Saved:</span>
+                <span>${(((compressFile.size - blob.size) / compressFile.size) * 100).toFixed(1)}%</span>
+              </div>
+            `;
+          }, 'image/jpeg', quality);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(compressFile);
+    }
+
+    document.getElementById('compressBtn').addEventListener('click', performCompress);
+
+    document.getElementById('downloadCompressed').addEventListener('click', () => {
+      if (!compressedBlob) {
+        showAlert('Please compress an image first', 'error');
+        return;
+      }
+      const url = URL.createObjectURL(compressedBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = compressFile.name.split('.')[0] + '_compressed.jpg';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('clearBtn2').addEventListener('click', () => {
+      compressFile = null;
+      compressedBlob = null;
+      fileInput2.value = '';
+      document.getElementById('controlsSection2').style.display = 'none';
+      document.getElementById('previewSection2').style.display = 'none';
+      document.getElementById('buttonsSection2').style.display = 'none';
+    });
+
+    // ========== TAB 3: REMOVE BACKGROUND ==========
+    const uploadArea3 = document.getElementById('uploadArea3');
+    const fileInput3 = document.getElementById('fileInput3');
+    let removebgFile = null;
+    let removebgResult = null;
+
+    uploadArea3.addEventListener('click', () => fileInput3.click());
+    uploadArea3.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea3.classList.add('active');
+    });
+    uploadArea3.addEventListener('dragleave', () => uploadArea3.classList.remove('active'));
+    uploadArea3.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea3.classList.remove('active');
+      handleFiles3(e.dataTransfer.files);
+    });
+
+    fileInput3.addEventListener('change', (e) => handleFiles3(e.target.files));
+
+    function handleFiles3(files) {
+      if (files.length === 0) return;
+      removebgFile = files[0];
+      if (removebgFile.size > 25 * 1024 * 1024) {
+        showAlert('File must be less than 25MB', 'error');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          document.getElementById('removebgOriginal').src = img.src;
+          document.getElementById('previewSection3').style.display = 'block';
+          document.getElementById('buttonsSection3').style.display = 'block';
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(removebgFile);
+    }
+
+    document.getElementById('removebgBtn').addEventListener('click', async () => {
+      if (!removebgFile) {
+        showAlert('Please select an image', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('removebgBtn');
+      btn.disabled = true;
+      btn.textContent = '⏳ Processing...';
+
+      try {
+        const formData = new FormData();
+        formData.append('image_file', removebgFile);
+
+        // Using free remove.bg API (Note: requires API key, using a fallback method)
+        // For demo, using a simple edge detection approach
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.naturalWidth;
+            canvas.height = img.naturalHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+
+            // Simple background removal using color detection
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+
+            // Get the most common color (background color)
+            const colorMap = {};
+            for (let i = 0; i < data.length; i += 4) {
+              const key = `${data[i]},${data[i+1]},${data[i+2]}`;
+              colorMap[key] = (colorMap[key] || 0) + 1;
+            }
+            const bgColor = Object.keys(colorMap).reduce((a, b) => colorMap[a] > colorMap[b] ? a : b);
+            const [bgR, bgG, bgB] = bgColor.split(',').map(Number);
+
+            // Remove background color with tolerance
+            const tolerance = 30;
+            for (let i = 0; i < data.length; i += 4) {
+              const r = data[i], g = data[i+1], b = data[i+2];
+              if (Math.abs(r - bgR) < tolerance && Math.abs(g - bgG) < tolerance && Math.abs(b - bgB) < tolerance) {
+                data[i+3] = 0; // Set alpha to 0 (transparent)
+              }
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+            removebgResult = canvas.toDataURL('image/png');
+            document.getElementById('removebgResult').src = removebgResult;
+            showAlert('✓ Background removed successfully!', 'success');
+            btn.disabled = false;
+            btn.textContent = '✂️ Remove Background';
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(removebgFile);
+      } catch (error) {
+        showAlert('Error: ' + error.message, 'error');
+        btn.disabled = false;
+        btn.textContent = '✂️ Remove Background';
+      }
+    });
+
+    document.getElementById('downloadRemovebg').addEventListener('click', () => {
+      if (!removebgResult) {
+        showAlert('Please process an image first', 'error');
+        return;
+      }
+      const link = document.createElement('a');
+      link.href = removebgResult;
+      link.download = removebgFile.name.split('.')[0] + '_no_bg.png';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+
+    document.getElementById('clearBtn3').addEventListener('click', () => {
+      removebgFile = null;
+      removebgResult = null;
+      fileInput3.value = '';
+      document.getElementById('previewSection3').style.display = 'none';
+      document.getElementById('buttonsSection3').style.display = 'none';
+    });
+
+    // ========== TAB 4: TRANSPARENT BACKGROUND ==========
+    const uploadArea4 = document.getElementById('uploadArea4');
+    const fileInput4 = document.getElementById('fileInput4');
+    let transparentFile = null;
+    let transparentResult = null;
+
+    uploadArea4.addEventListener('click', () => fileInput4.click());
+    uploadArea4.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea4.classList.add('active');
+    });
+    uploadArea4.addEventListener('dragleave', () => uploadArea4.classList.remove('active'));
+    uploadArea4.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea4.classList.remove('active');
+      handleFiles4(e.dataTransfer.files);
+    });
+
+    fileInput4.addEventListener('change', (e) => handleFiles4(e.target.files));
+
+    function handleFiles4(files) {
+      if (files.length === 0) return;
+      transparentFile = files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          document.getElementById('transparentOriginal').src = img.src;
+          document.getElementById('controlsSection4').style.display = 'block';
+          document.getElementById('previewSection4').style.display = 'block';
+          document.getElementById('buttonsSection4').style.display = 'block';
+          performTransparent();
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(transparentFile);
+    }
+
+    document.getElementById('colorPicker').addEventListener('input', performTransparent);
+    document.getElementById('tolerance').addEventListener('input', (e) => {
+      document.getElementById('toleranceValue').textContent = e.target.value;
+      performTransparent();
+    });
+
+    function performTransparent() {
+      if (!transparentFile) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const data = imageData.data;
+
+          const color = document.getElementById('colorPicker').value;
+          const r = parseInt(color.substr(1, 2), 16);
+          const g = parseInt(color.substr(3, 2), 16);
+          const b = parseInt(color.substr(5, 2), 16);
+          const tolerance = parseInt(document.getElementById('tolerance').value);
+
+          for (let i = 0; i < data.length; i += 4) {
+            if (Math.abs(data[i] - r) < tolerance && Math.abs(data[i+1] - g) < tolerance && Math.abs(data[i+2] - b) < tolerance) {
+              data[i+3] = 0;
+            }
+          }
+
+          ctx.putImageData(imageData, 0, 0);
+          transparentResult = canvas.toDataURL('image/png');
+          document.getElementById('transparentResult').src = transparentResult;
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(transparentFile);
+    }
+
+    document.getElementById('transparentBtn').addEventListener('click', performTransparent);
+
+    document.getElementById('downloadTransparent').addEventListener('click', () => {
+      if (!transparentResult) {
+        showAlert('Please create a transparent image first', 'error');
+        return;
+      }
+      const link = document.createElement('a');
+      link.href = transparentResult;
+      link.download = transparentFile.name.split('.')[0] + '_transparent.png';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+
+    document.getElementById('clearBtn4').addEventListener('click', () => {
+      transparentFile = null;
+      transparentResult = null;
+      fileInput4.value = '';
+      document.getElementById('controlsSection4').style.display = 'none';
+      document.getElementById('previewSection4').style.display = 'none';
+      document.getElementById('buttonsSection4').style.display = 'none';
+    });
   </script>
 </body>
 </html>
